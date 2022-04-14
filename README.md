@@ -1,4 +1,4 @@
-# coffeegallery
+# Coffee Gallery
 
 A new Flutter project.
 
