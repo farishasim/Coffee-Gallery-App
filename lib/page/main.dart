@@ -1,3 +1,4 @@
+import 'package:coffeegallery/common/grid_card.dart';
 import 'package:coffeegallery/model/coffee.dart';
 import 'package:coffeegallery/page/detail.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,17 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Galeri Kopi"),
+        title: Text("Coffee Gallery"),
       ),
-      body: CoffeeList(),
+      body: LayoutBuilder(builder: (context, constraints) {
+        if (constraints.maxWidth <= 600) {
+          return CoffeeList();
+        } else if (constraints.maxWidth <= 1200) {
+          return CoffeeGrid(gridCount: 4);
+        } else {
+          return CoffeeGrid(gridCount: 6);
+        }
+      },)
     );
   }
 }
@@ -34,9 +43,11 @@ class CoffeeList extends StatelessWidget {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: Image.asset(coffee.imageAsset, 
-                    height: 80,
-                    fit: BoxFit.cover,)
+                    child: Image.asset(
+                      coffee.imageAsset, 
+                      height: 80,
+                      fit: BoxFit.cover,
+                    )
                   ),
                   Expanded(
                     flex: 3,
@@ -61,5 +72,36 @@ class CoffeeList extends StatelessWidget {
         );
       }
     );
+  }
+}
+
+class CoffeeGrid extends StatelessWidget {
+  final int gridCount;
+
+  CoffeeGrid({required this.gridCount});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scrollbar(
+      isAlwaysShown: true,
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: GridView.count(
+          crossAxisCount: gridCount,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          children: MyCoffeeList.map((coffee) {
+            return InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return DetailPage(coffee: coffee);
+                }));
+              },
+              child: CoffeeCardGrid(coffee: coffee)
+            );
+          }).toList(),
+        )
+      ),
+    );    
   }
 }

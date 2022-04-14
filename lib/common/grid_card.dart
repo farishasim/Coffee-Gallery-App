@@ -8,8 +8,33 @@ class CoffeeCardGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-
+    return SizedBox(
+      height: 400,
+      child: Card(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Flexible(
+              flex: 1,
+              child: Image.asset(
+                coffee.imageAsset,
+                height: 600,
+                fit: BoxFit.fitHeight,
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(coffee.name, textAlign: TextAlign.center,),
+                  Text(coffee.price)
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
