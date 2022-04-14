@@ -12,6 +12,64 @@ class DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(builder: ((context, constraints) {
+      if (constraints.maxWidth > 800) {
+        return DetailWebPage(coffee: coffee);
+      } else {
+        return DetailMobilePage(coffee: coffee);
+      }
+    }));
+  }
+}
+
+class SimilarCoffeeList extends StatelessWidget{
+  final Coffee coffee;
+
+  SimilarCoffeeList({required this.coffee});
+  
+  @override
+  Widget build(BuildContext context) {
+    if (coffee.similar.length > 0) {
+      return SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Similar Drinks",
+                style: TextStyle(fontSize: 17),
+              ),
+            ),
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 3,
+              children: this.coffee.similar.map((similarIdx) {
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return DetailPage(coffee: MyCoffeeList[similarIdx]);
+                    }));
+                  },
+                  child: CoffeeCardGrid(coffee: MyCoffeeList[similarIdx]),
+                );
+              }).toList(),
+            )
+          ],
+        ),
+      );
+    }
+    return Container();
+  }
+}
+
+class DetailMobilePage extends StatelessWidget {
+  final Coffee coffee;
+
+  DetailMobilePage({required this.coffee});
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -79,42 +137,63 @@ class DetailPage extends StatelessWidget {
   }
 }
 
-class SimilarCoffeeList extends StatelessWidget{
+class DetailWebPage extends StatelessWidget {
   final Coffee coffee;
 
-  SimilarCoffeeList({required this.coffee});
-  
+  DetailWebPage({required this.coffee});
+
   @override
   Widget build(BuildContext context) {
-    if (coffee.similar.length > 0) {
-      return SafeArea(
-        child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Coffee Gallery"),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(100),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Similar Drinks",
-                style: TextStyle(fontSize: 17),
-              ),
+            Flexible(
+              flex: 1,
+              child: Image.asset(
+                coffee.imageAsset,
+                fit: BoxFit.cover
+              )
             ),
-            GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 3,
-              children: this.coffee.similar.map((similarIdx) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return DetailPage(coffee: MyCoffeeList[similarIdx]);
-                    }));
-                  },
-                  child: CoffeeCardGrid(coffee: MyCoffeeList[similarIdx]),
-                );
-              }).toList(),
-            )
+            Flexible(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Column(
+                  children: [
+                    Text(
+                      coffee.name,
+                      style: TextStyle(
+                        fontSize: 35,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      coffee.price,
+                      style: TextStyle(
+                        fontSize: 17,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      coffee.description,
+                      style: TextStyle(
+                        fontSize: 17,
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ),
           ],
         ),
-      );
-    }
-    return Container();
+      ),
+    );
   }
 }
